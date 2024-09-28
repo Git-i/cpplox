@@ -5,7 +5,8 @@ project('cpplox', 'cpp',
 sources = [
         'src/main.cpp',
         'src/interpreter/interpreter.cpp',
-        'src/interpreter/scanner.cpp'
+        'src/interpreter/scanner.cpp',
+        'src/interpreter/expression.cpp',
 ]
 cpplox = executable('cpplox', sources, install : true)
 

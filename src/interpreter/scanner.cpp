@@ -1,5 +1,5 @@
 #include "scanner.h"
-
+#include "expression.h"
 namespace cpplox
 {
     std::unordered_map<std::string, token_type> scanner::keyword_map{
@@ -20,8 +20,16 @@ namespace cpplox
         {"var", token_type::Var},
         {"while", token_type::While},
     };
+    class bexp
+    {
+    public:
+        int visit_binary_expression(binary_expression* expression) const;
+    };
     token scanner::scan()
     {
+        binary_expression e;
+        bexp a;
+        e.accept_visitor(a);
         return scan_token();
     }
 
