@@ -22,7 +22,7 @@ namespace cpplox {
     class scanner {
         std::istream& source;
     public:
-        scanner(std::istream& src) : source(src) {};
+        scanner(std::istream& src) : source(src), line(1) {};
         token scan() noexcept(false);
     private:
         char advance();

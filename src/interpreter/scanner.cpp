@@ -53,6 +53,16 @@ namespace cpplox
             break;
         case '/':
             if(next_is('/')) while (peek() != '\n' && !is_eof()) advance();
+            else if(next_is('*'))
+            {
+                while (peek() != '*' || peek_next() != '/' && !is_eof())
+                {
+                    if(peek() == '\n') line++;
+                    advance();
+                }
+                if(is_eof()) throw scan_error("unterminated block comment", line);
+                advance(); advance();
+            }
             else return {.type = token_type::Slash};
             break;
         case '"': return scan_string();
@@ -62,7 +72,7 @@ namespace cpplox
         case '\n': line++; break;
         default:
             if(std::isdigit(static_cast<unsigned char>(c))) return scan_number(c);
-            else if(std::isalpha(static_cast<unsigned char>(c))) return scan_identifier(c);
+            else if(std::isalpha(static_cast<unsigned char>(c)) || c == '_') return scan_identifier(c);
             throw scan_error("Invalid character", line);
         }
     }
