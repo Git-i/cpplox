@@ -17,6 +17,6 @@ namespace cpplox {
     struct token {
         token_type type;
         std::string text;
-        int line;
+        int line = 0;
     };
 }

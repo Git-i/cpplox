@@ -1,5 +1,5 @@
 #include "scanner.h"
-#include "expression.h"
+#include "ast_printer.h"
 namespace cpplox
 {
     std::unordered_map<std::string, token_type> scanner::keyword_map{
@@ -20,25 +20,21 @@ namespace cpplox
         {"var", token_type::Var},
         {"while", token_type::While},
     };
-    class bexp
-    {
-    public:
-        int visit_binary_expression(binary_expression* expression) const;
-    };
     token scanner::scan()
     {
-        binary_expression e;
-        bexp a;
-        e.accept_visitor(a);
         return scan_token();
     }
-
+    int lol()
+    {
+        expressions expres;
+        std::visit(ast_printer{}, expres);
+    }
     token scanner::scan_token()
     {
         while (true)
         switch (char c = advance())
         {
-        case '(': return {.type = token_type::LParen};
+        case '(': return {.type = token_type::LParen, .text = "("};
         case ')': return {.type = token_type::RParen};
         case '{': return {.type = token_type::LBrace};
         case '}': return {.type = token_type::RBrace};

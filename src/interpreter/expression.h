@@ -5,53 +5,41 @@
 #include "token.h"
 
 namespace cpplox {
-    struct binary_expression;
-    struct unary_expression;
-    struct literal_expression;
-    struct group_expression;
-    template<typename T> concept binary_expression_visitor = requires(const T a, binary_expression* b)
-    {
-        { a.visit_binary_expression(b) };
-    };
-    template<typename T> concept unary_expression_visitor = requires(const T a, unary_expression* b)
-    {
-        { a.visit_unary_expression(b) };
-    };
-    template<typename T> concept literal_expression_visitor = requires(const T a, literal_expression* b)
-    {
-        { a.visit_literal_expression(b) };
-    };
-    template<typename T> concept group_expression_visitor = requires(const T a, group_expression* b)
-    {
-        { a.visit_group_expression(b) };
-    };
     class expression
     {
     public:
         virtual ~expression() = default;
     };
-    struct binary_expression : public expression {
+    class binary_expression : public expression {
+    public:
         std::unique_ptr<expression> left;
         std::unique_ptr<expression> right;
         token operator_token;
-        template<binary_expression_visitor V>  auto accept_visitor(const V& v) {return v.visit_binary_expression(this);}
     };
-    struct unary_expression : public expression
+    class unary_expression : public expression
     {
+    public:
         std::unique_ptr<expression> operand;
         token operator_token;
-        template<unary_expression_visitor V>  auto accept_visitor(const V& v) {return v.visit_unary_expression(this);}
     };
-    struct group_expression : public expression
+    class group_expression : public expression
     {
+    public:
         std::unique_ptr<expression> operand;
-        template<group_expression_visitor V>  auto accept_visitor(const V& v) {return v.visit_group_expression(this);}
     };
-    struct literal_expression : public expression
+    class literal_expression : public expression
     {
-        std::variant<std::string, double> value;
-        template<literal_expression_visitor V>  auto accept_visitor(const V& v) {return v.visit_literal_expression(this);}
+    public:
+        std::variant<std::monostate, std::string, double> value;
     };
-
+    using expressions = std::variant<binary_expression*, unary_expression*, group_expression*, literal_expression*>;
+    expressions to_variant(expression& expr)
+    {
+        if(auto p = dynamic_cast<binary_expression*>(&expr)) return p;
+        else if(auto p = dynamic_cast<unary_expression*>(&expr)) return p;
+        else if(auto p = dynamic_cast<literal_expression*>(&expr)) return p;
+        else if(auto p = dynamic_cast<group_expression*>(&expr)) return p;
+        else return {};
+    };
 
 } // cpplox
