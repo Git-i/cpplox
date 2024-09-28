@@ -8,8 +8,9 @@ namespace cpplox {
     class scan_error : public std::exception
     {
         std::string message;
+        int line;
     public:
-        explicit scan_error(const std::string_view msg): message(msg){}
+        scan_error(const std::string_view msg, int line): message(msg), line(line) {}
         [[nodiscard]] const char* what() const noexcept override
         {
             return message.c_str();
@@ -19,13 +20,15 @@ namespace cpplox {
         std::istream& source;
     public:
         scanner(std::istream& src) : source(src) {};
-        std::vector<token> scan() noexcept(false);
+        token scan() noexcept(false);
     private:
         char advance();
+        [[nodiscard]] bool is_eof();
         [[nodiscard]] char peek();
         bool next_is(char expected);
-        void scan_token(std::vector<token>& tokens);
-        void add_token(token_type t, std::vector<token>& tokens);
+        token scan_string();
+        token scan_token();
+        int line;
         size_t current_pos = 0;
     };
 }

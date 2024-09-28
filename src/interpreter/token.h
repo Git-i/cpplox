@@ -8,7 +8,7 @@ namespace cpplox {
         Equal, DoubleEqual, Greater, GreaterEqual, Less, LessEqaul,
         Exclamation, ExclamationEqual,
 
-        Identifier, StringLiterl, NumericLiteral,
+        Identifier, StringLiteral, NumericLiteral,
 
         And, Or, Nil, Class, Else, False, Fun, For, If, Print, Return,
         Super, This, True, Var, While
@@ -16,7 +16,7 @@ namespace cpplox {
     };
     struct token {
         token_type type;
-        std::string_view text;
+        std::string text;
         int line;
     };
 }
