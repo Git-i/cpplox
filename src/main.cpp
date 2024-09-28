@@ -2,7 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include "interpreter/interpreter.h"
+#include "interpreter/scanner.h"
+
 int main(int argc, char** argv) {
+    /*
     std::istream* input;
     std::ifstream ifs;
     if (argc > 2)
@@ -20,4 +23,11 @@ int main(int argc, char** argv) {
 
     cpplox::interpreter in(*input, std::cerr);
     in.run();
+    */
+    cpplox::scanner sc(std::cin);
+    while(true)
+    {
+        auto tk = sc.scan();
+        std::cout << static_cast<int>(tk.type) << " " << tk.text << std::endl;
+    }
 }

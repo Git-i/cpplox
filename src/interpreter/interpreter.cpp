@@ -14,20 +14,9 @@ namespace cpplox {
     }
     void interpreter::run_line(const std::string& str, int line_no)
     {
-        scanner sc(str);
-        try
-        {
-            auto tokens = sc.scan();
-        }
-        catch(const scan_error& e)
-        {
-            report_error(line_no, e.what());
-        }
+        scanner sc(input);
 
-    }
-    void interpreter::report_error(int line, const std::string& message)
-    {
-        errors << "[line " <<   line << ": " << message << std::endl;
+
     }
 
 

@@ -5,7 +5,7 @@ namespace cpplox {
         LParen, RParen, RBrace, LBrace, Comma, Period, Minus,
         Plus, Semicolon, Slash, Star,
 
-        Equal, DoubleEqual, Greater, GreaterEqual, Less, LessEqaul,
+        Equal, DoubleEqual, Greater, GreaterEqual, Less, LessEqual,
         Exclamation, ExclamationEqual,
 
         Identifier, StringLiteral, NumericLiteral,

@@ -4,6 +4,9 @@
 #include <vector>
 #include "token.h"
 #include <istream>
+#include <cstdint>
+#include <unordered_map>
+
 namespace cpplox {
     class scan_error : public std::exception
     {
@@ -27,8 +30,12 @@ namespace cpplox {
         [[nodiscard]] char peek();
         bool next_is(char expected);
         token scan_string();
+        token scan_number(char start = 0);
+        token scan_identifier(char start = 0);
+        char peek_next();
         token scan_token();
         int line;
         size_t current_pos = 0;
+        static std::unordered_map<std::string, token_type> keyword_map;
     };
 }
