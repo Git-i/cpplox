@@ -1,7 +1,0 @@
-//terminals are represented as "token_type"
-expression ::= literal | binary | unary | grouping
-grouping ::= "(" expression ")"
-literal ::= "TRUE" | "FALSE" | NUMBER | "NIL" | STRING
-binary ::= expression operator expression
-unary ::= ("!" | "-") expression
-operator ::=  "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/"
