@@ -31,9 +31,11 @@ namespace cpplox
         {
             class literal_visitor
             {
+            public:
                 std::string operator()(std::string& str) const { return str; }
                 std::string operator()(double& dbl) const { return std::to_string(dbl); }
-                std::string operator()(std::monostate) const { return "nil"; }
+                std::string operator()(std::monostate&) const { return "nil"; }
+                std::string operator()(bool& b) const { return b ?"true" : "false"; }
             };
             return std::visit(literal_visitor{}, exr->value);
         }

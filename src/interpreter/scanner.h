@@ -24,9 +24,9 @@ namespace cpplox {
     public:
         scanner(std::istream& src) : source(src), line(1) {};
         token scan() noexcept(false);
+        [[nodiscard]] bool is_eof();
     private:
         char advance();
-        [[nodiscard]] bool is_eof();
         [[nodiscard]] char peek();
         bool next_is(char expected);
         token scan_string();

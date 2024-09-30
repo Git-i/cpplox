@@ -15,8 +15,6 @@ namespace cpplox {
     void interpreter::run_line(const std::string& str, int line_no)
     {
         scanner sc(input);
-
-
     }
 
 

@@ -30,16 +30,10 @@ namespace cpplox {
     class literal_expression : public expression
     {
     public:
-        std::variant<std::monostate, std::string, double> value;
+        std::variant<std::monostate, std::string, double, bool> value;
     };
     using expressions = std::variant<binary_expression*, unary_expression*, group_expression*, literal_expression*>;
-    expressions to_variant(expression& expr)
-    {
-        if(auto p = dynamic_cast<binary_expression*>(&expr)) return p;
-        else if(auto p = dynamic_cast<unary_expression*>(&expr)) return p;
-        else if(auto p = dynamic_cast<literal_expression*>(&expr)) return p;
-        else if(auto p = dynamic_cast<group_expression*>(&expr)) return p;
-        else return {};
-    };
+    expressions to_variant(expression& expr);
+
 
 } // cpplox

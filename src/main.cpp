@@ -1,6 +1,9 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+
+#include "interpreter/ast_printer.h"
+#include "interpreter/expression.h"
 #include "interpreter/interpreter.h"
 #include "interpreter/scanner.h"
 
@@ -24,10 +27,18 @@ int main(int argc, char** argv) {
     cpplox::interpreter in(*input, std::cerr);
     in.run();
     */
-    cpplox::scanner sc(std::cin);
-    while(true)
-    {
-        auto tk = sc.scan();
-        std::cout << static_cast<int>(tk.type) << " " << tk.text << std::endl;
-    }
+    cpplox::binary_expression expression;
+    auto l = std::make_unique<cpplox::unary_expression>();
+    auto lit = std::make_unique<cpplox::literal_expression>();
+    lit->value = 100.0;
+    l->operator_token = cpplox::token{.type = cpplox::token_type::Exclamation, .text = "!"};
+    l->operand = std::move(lit);
+    auto r = std::make_unique<cpplox::group_expression>();
+    auto lit2 = std::make_unique<cpplox::literal_expression>();
+    lit2->value = 45.67;
+    r->operand = std::move(lit2);
+    expression.left = std::move(l);
+    expression.right = std::move(r);
+    expression.operator_token = cpplox::token{.type = cpplox::token_type::Star, .text = "*"};
+    std::cout << std::visit(cpplox::ast_printer{}, cpplox::to_variant(expression)) << std::endl;
 }
