@@ -24,61 +24,61 @@ namespace cpplox
     {
         return scan_token();
     }
-    int lol()
-    {
-        expressions expres;
-        std::visit(ast_printer{}, expres);
-    }
     token scanner::scan_token()
     {
         while (true)
-        switch (char c = advance())
         {
-        case '(': return {.type = token_type::LParen, .text = "("};
-        case ')': return {.type = token_type::RParen};
-        case '{': return {.type = token_type::LBrace};
-        case '}': return {.type = token_type::RBrace};
-        case ',': return {.type = token_type::Comma};
-        case '.': return {.type = token_type::Period};
-        case '-': return {.type = token_type::Minus};
-        case '+': return {.type = token_type::Plus};
-        case ';': return {.type = token_type::Comma};
-        case '*': return {.type = token_type::Star};
-        case '!':
-            return {.type = next_is('=') ? token_type::ExclamationEqual : token_type::Exclamation};
-        case '=':
-            return {.type = next_is('=') ? token_type::DoubleEqual : token_type::Equal};
-            break;
-        case '<':
-            return {.type = next_is('=') ? token_type::LessEqual : token_type::Less};
-            break;
-        case '>':
-            return {.type = next_is('>') ? token_type::GreaterEqual : token_type::Greater};
-            break;
-        case '/':
-            if(next_is('/')) while (peek() != '\n' && !is_eof()) advance();
-            else if(next_is('*'))
+            char c = advance();
+            if(is_eof()) break;
+            switch (c)
             {
-                while (peek() != '*' || peek_next() != '/' && !is_eof())
+            case '(': return {.type = token_type::LParen, .text = std::string(1, c)};
+            case ')': return {.type = token_type::RParen, .text = std::string(1, c)};
+            case '{': return {.type = token_type::LBrace, .text = std::string(1, c)};
+            case '}': return {.type = token_type::RBrace, .text = std::string(1, c)};
+            case ',': return {.type = token_type::Comma, .text = std::string(1, c)};
+            case '.': return {.type = token_type::Period, .text = std::string(1, c)};
+            case '-': return {.type = token_type::Minus, .text = std::string(1, c)};
+            case '+': return {.type = token_type::Plus, .text = std::string(1, c)};
+            case ';': return {.type = token_type::Comma, .text = std::string(1, c)};
+            case '*': return {.type = token_type::Star, .text = std::string(1, c)};
+            case '!':
+                return {.type = next_is('=') ? token_type::ExclamationEqual : token_type::Exclamation};
+            case '=':
+                return {.type = next_is('=') ? token_type::DoubleEqual : token_type::Equal};
+                break;
+            case '<':
+                return {.type = next_is('=') ? token_type::LessEqual : token_type::Less};
+                break;
+            case '>':
+                return {.type = next_is('>') ? token_type::GreaterEqual : token_type::Greater};
+                break;
+            case '/':
+                if(next_is('/')) while (peek() != '\n' && !is_eof()) advance();
+                else if(next_is('*'))
                 {
-                    if(peek() == '\n') line++;
-                    advance();
+                    while (peek() != '*' || peek_next() != '/' && !is_eof())
+                    {
+                        if(peek() == '\n') line++;
+                        advance();
+                    }
+                    if(is_eof()) throw scan_error("unterminated block comment", line);
+                    advance(); advance();
                 }
-                if(is_eof()) throw scan_error("unterminated block comment", line);
-                advance(); advance();
+                else return {.type = token_type::Slash};
+                break;
+            case '"': return scan_string();
+            case ' ': [[fallthrough]];
+            case '\r': [[fallthrough]];
+            case '\t': break;
+            case '\n': line++; break;
+            default:
+                if(std::isdigit(static_cast<unsigned char>(c))) return scan_number(c);
+                else if(std::isalpha(static_cast<unsigned char>(c)) || c == '_') return scan_identifier(c);
+                throw scan_error("Invalid character", line);
             }
-            else return {.type = token_type::Slash};
-            break;
-        case '"': return scan_string();
-        case ' ': [[fallthrough]];
-        case '\r': [[fallthrough]];
-        case '\t': break;
-        case '\n': line++; break;
-        default:
-            if(std::isdigit(static_cast<unsigned char>(c))) return scan_number(c);
-            else if(std::isalpha(static_cast<unsigned char>(c)) || c == '_') return scan_identifier(c);
-            throw scan_error("Invalid character", line);
         }
+        return {.type = token_type::Eof};
     }
     char scanner::peek_next()
     {

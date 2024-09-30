@@ -2,6 +2,8 @@
 #include <string_view>
 namespace cpplox {
     enum class token_type {
+        Eof = -1,
+
         LParen, RParen, RBrace, LBrace, Comma, Period, Minus,
         Plus, Semicolon, Slash, Star,
 

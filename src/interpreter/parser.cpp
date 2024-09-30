@@ -4,15 +4,17 @@
 
 #include "parser.h"
 
+#include <csignal>
 #include <cstring>
 
 namespace cpplox {
     std::optional<token> parser::next_is(std::span<const token_type> types)
     {
         if(m_scanner.is_eof()) return std::nullopt;
-        auto tk = get();
+        auto tk = peek();
         if(std::ranges::find(types, tk.type) != types.end())
         {
+            get();
             return tk;
         }
         return std::nullopt;
@@ -27,6 +29,30 @@ namespace cpplox {
         peek_buffer.pop();
         return data;
     }
+    void parser::synchronize()
+    {
+        get();
+        while(!m_scanner.is_eof())
+        {
+            switch(peek().type)
+            {
+            using enum token_type;
+            case Class: [[fallthrough]];
+            case Fun: [[fallthrough]];
+            case Var: [[fallthrough]];
+            case For: [[fallthrough]];
+            case If: [[fallthrough]];
+            case While: [[fallthrough]];
+            case Print: [[fallthrough]];
+            case Return: [[fallthrough]];
+                return;
+            default:;
+            }
+
+            get();
+        }
+    }
+
     token parser::peek()
     {
         if(peek_buffer.empty())
@@ -38,7 +64,19 @@ namespace cpplox {
 
 
     using enum token_type;
-    std::unique_ptr<expression> parser::parse_expression()
+    std::unique_ptr<expression> parser::parse()
+    {
+        try
+        {
+            return expr();
+        }
+        catch(const parse_error& e)
+        {
+            raise(SIGTRAP);
+        }
+    }
+
+    std::unique_ptr<expression> parser::expr()
     {
         return equality();
     }
@@ -110,6 +148,7 @@ namespace cpplox {
             auto new_expr = std::make_unique<unary_expression>();
             new_expr->operator_token = *tk;
             new_expr->operand = unary();
+            return new_expr;
         }
         return primary();
     }
@@ -149,11 +188,14 @@ namespace cpplox {
         }
         if(tk.type == LParen)
         {
-            auto expr = parse_expression();
+            auto exp = expr();
             auto grp = std::make_unique<group_expression>();
-            grp->operand = std::move(expr);
+            grp->operand = std::move(exp);
+            auto rparen = get();
+            if(rparen.type != token_type::RParen) throw parse_error("Expected ')' after expression", rparen.line);
             return grp;
         }
+        throw parse_error("Expected expression", tk.line);
     }
 
 
