@@ -5,6 +5,7 @@
 #include "token.h"
 
 namespace cpplox {
+    using lox_type = std::variant<std::monostate, std::string, double, bool, void*>; //consider std::any?
     class expression
     {
     public:
@@ -37,7 +38,7 @@ namespace cpplox {
     class literal_expression : public expression
     {
     public:
-        std::variant<std::monostate, std::string, double, bool> value;
+        lox_type value;
     };
     using expressions = std::variant<binary_expression*, unary_expression*, group_expression*, literal_expression*, ternary_expression*>;
     expressions to_variant(expression* expr);

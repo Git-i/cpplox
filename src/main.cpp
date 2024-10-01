@@ -3,10 +3,18 @@
 #include <iostream>
 
 #include "interpreter/ast_printer.h"
+#include "interpreter/executor.h"
 #include "interpreter/expression.h"
 #include "interpreter/interpreter.h"
 #include "interpreter/parser.h"
 #include "interpreter/scanner.h"
+
+std::string to_string(const cpplox::lox_type& type)
+{
+    if(std::holds_alternative<std::monostate>(type)) return "nil";
+    if(std::holds_alternative<std::string>(type)) return std::get<std::string>(type);
+    if(std::holds_alternative<double>(type)) return std::to_string(std::get<double>(type));
+}
 
 int main(int argc, char** argv) {
     /*
@@ -28,9 +36,9 @@ int main(int argc, char** argv) {
     cpplox::interpreter in(*input, std::cerr);
     in.run();
     */
-    std::istringstream input("10 ? 1 : 1 * (20 + 25)");
+    std::istringstream input(R"("asggae")");
     cpplox::scanner sc(input);
     cpplox::parser p(sc);
     auto tree = p.parse();
-    std::cout << std::visit(cpplox::ast_printer{}, cpplox::to_variant(tree.get())) << std::endl;
+    std::cout << to_string(std::visit(cpplox::executor{}, cpplox::to_variant(tree.get()))) << std::endl;
 }

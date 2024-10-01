@@ -39,6 +39,7 @@ namespace cpplox
                 std::string operator()(double& dbl) const { return std::to_string(dbl); }
                 std::string operator()(std::monostate&) const { return "nil"; }
                 std::string operator()(bool& b) const { return b ?"true" : "false"; }
+                std::string operator()(void*& b) const { return "Object"; }
             };
             return std::visit(literal_visitor{}, exr->value);
         }
