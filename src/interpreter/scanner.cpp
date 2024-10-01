@@ -42,6 +42,8 @@ namespace cpplox
             case '+': return {.type = token_type::Plus, .text = std::string(1, c)};
             case ';': return {.type = token_type::Comma, .text = std::string(1, c)};
             case '*': return {.type = token_type::Star, .text = std::string(1, c)};
+            case '?': return {.type = token_type::Question, .text = std::string(1, c)};
+            case ':': return {.type = token_type::Colon, .text = std::string(1, c)};
             case '!':
                 return {.type = next_is('=') ? token_type::ExclamationEqual : token_type::Exclamation};
             case '=':

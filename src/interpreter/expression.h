@@ -16,6 +16,13 @@ namespace cpplox {
         std::unique_ptr<expression> right;
         token operator_token;
     };
+    class ternary_expression : public expression
+    {
+    public:
+        std::unique_ptr<expression> valid;
+        std::unique_ptr<expression> invalid;
+        std::unique_ptr<expression> condition;
+    };
     class unary_expression : public expression
     {
     public:
@@ -32,8 +39,8 @@ namespace cpplox {
     public:
         std::variant<std::monostate, std::string, double, bool> value;
     };
-    using expressions = std::variant<binary_expression*, unary_expression*, group_expression*, literal_expression*>;
-    expressions to_variant(expression& expr);
+    using expressions = std::variant<binary_expression*, unary_expression*, group_expression*, literal_expression*, ternary_expression*>;
+    expressions to_variant(expression* expr);
 
 
 } // cpplox

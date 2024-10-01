@@ -78,9 +78,26 @@ namespace cpplox {
 
     std::unique_ptr<expression> parser::expr()
     {
-        return equality();
+        return ternary();
     }
-
+    std::unique_ptr<expression> parser::ternary()
+    {
+        auto condition = equality();
+        auto tk = next_is({{Question}});
+        if(tk.has_value())
+        {
+            auto new_expr = std::make_unique<ternary_expression>();
+            auto valid = expr();
+            auto colon = get();
+            if(colon.type != Colon)
+                throw parse_error("Expected ':' in ternary expression", colon.line);
+            new_expr->condition = std::move(condition);
+            new_expr->valid = std::move(valid);
+            new_expr->invalid = ternary();
+            return new_expr;
+        }
+        return condition;
+    }
     std::unique_ptr<expression> parser::equality()
     {
         auto expr = comparison();

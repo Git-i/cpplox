@@ -30,6 +30,7 @@ namespace cpplox {
         void synchronize();
         std::optional<token> next_is(std::span<const token_type>);
         std::unique_ptr<expression> expr();
+        std::unique_ptr<expression> ternary();
         std::unique_ptr<expression> equality();
         std::unique_ptr<expression> comparison();
         std::unique_ptr<expression> term();

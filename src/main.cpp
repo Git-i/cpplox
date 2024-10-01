@@ -28,9 +28,9 @@ int main(int argc, char** argv) {
     cpplox::interpreter in(*input, std::cerr);
     in.run();
     */
-    std::istringstream input("10 * (20 + 25)");
+    std::istringstream input("10 ? 1 : 1 * (20 + 25)");
     cpplox::scanner sc(input);
     cpplox::parser p(sc);
     auto tree = p.parse();
-    std::cout << std::visit(cpplox::ast_printer{}, cpplox::to_variant(*tree)) << std::endl;
+    std::cout << std::visit(cpplox::ast_printer{}, cpplox::to_variant(tree.get())) << std::endl;
 }

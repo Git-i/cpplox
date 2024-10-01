@@ -5,7 +5,7 @@ namespace cpplox {
         Eof = -1,
 
         LParen, RParen, RBrace, LBrace, Comma, Period, Minus,
-        Plus, Semicolon, Slash, Star,
+        Plus, Semicolon, Slash, Star, Question, Colon,
 
         Equal, DoubleEqual, Greater, GreaterEqual, Less, LessEqual,
         Exclamation, ExclamationEqual,
