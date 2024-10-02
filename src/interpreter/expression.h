@@ -51,6 +51,13 @@ namespace cpplox {
         token name;
         std::unique_ptr<expression> value;
     };
+    class logical_expression : public expression
+    {
+    public:
+        token tk;
+        std::unique_ptr<expression> left;
+        std::unique_ptr<expression> right;
+    };
     using expressions = std::variant<binary_expression*,
         unary_expression*,
         group_expression*,

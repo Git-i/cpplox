@@ -37,9 +37,12 @@ namespace cpplox {
         std::unique_ptr<statement> print_stat();
         std::unique_ptr<statement> expr_stat();
         std::unique_ptr<statement> block_stat();
+        std::unique_ptr<statement> if_stat();
 
 
         std::unique_ptr<expression> expr();
+        std::unique_ptr<expression> or_expr();
+        std::unique_ptr<expression> and_expr();
         std::unique_ptr<expression> assignment();
         std::unique_ptr<expression> ternary();
         std::unique_ptr<expression> equality();

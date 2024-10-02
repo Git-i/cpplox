@@ -11,6 +11,7 @@ namespace cpplox {
         if(auto p = dynamic_cast<ternary_expression*>(expr)) return p;
         if(auto p = dynamic_cast<variable_expression*>(expr)) return p;
         if(auto p = dynamic_cast<assignment_expression*>(expr)) return p;
+        if(auto p = dynamic_cast<logical_expression*>(expr)) return p;
         return {};
     };
 

@@ -31,7 +31,18 @@ namespace cpplox
     public:
         std::vector<std::unique_ptr<statement>> statements;
     };
-    using statements = std::variant<expression_statement*, print_statement*, variable_statement*, block_statement*>;
+    class if_statement : public statement
+    {
+    public:
+        std::unique_ptr<expression> condition;
+        std::unique_ptr<statement> then_statement;
+        std::unique_ptr<statement> else_statement;
+    };
+    using statements = std::variant<expression_statement*,
+                                    print_statement*,
+                                    variable_statement*,
+                                    block_statement*,
+                                    if_statement*>;
     statements to_variant(statement* stmt);
 
 

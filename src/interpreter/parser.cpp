@@ -98,7 +98,16 @@ namespace cpplox {
     {
         if(auto tk = next_is({{Print}})) return print_stat();
         if(auto tk = next_is({{LBrace}})) return block_stat();
+        if(auto tk = next_is({{If}})) return if_stat();
         return expr_stat();
+    }
+    std::unique_ptr<statement> parser::if_stat()
+    {
+        auto st = std::make_unique<if_statement>();
+        st->condition = expr();
+        st->then_statement = stat();
+        if(auto tk = next_is({{Else}})) st->else_statement = stat();
+        return st;
     }
 
     std::unique_ptr<statement> parser::print_stat()
@@ -158,7 +167,7 @@ namespace cpplox {
 
     std::unique_ptr<expression> parser::ternary()
     {
-        auto condition = equality();
+        auto condition = or_expr();
         auto tk = next_is({{Question}});
         if(tk.has_value())
         {
@@ -173,6 +182,38 @@ namespace cpplox {
             return new_expr;
         }
         return condition;
+    }
+    std::unique_ptr<expression> parser::or_expr()
+    {
+        auto left = and_expr();
+        auto tk = next_is({{Or}});
+        while(tk)
+        {
+            auto new_expr = std::make_unique<logical_expression>();
+            auto rhs = and_expr();
+            new_expr->left = std::move(left);
+            new_expr->right = std::move(rhs);
+            new_expr->tk = *tk;
+            left = std::move(new_expr);
+            tk = next_is({{Or}});
+        }
+        return left;
+    }
+    std::unique_ptr<expression> parser::and_expr()
+    {
+        auto left = equality();
+        auto tk = next_is({{And}});
+        while(tk)
+        {
+            auto new_expr = std::make_unique<logical_expression>();
+            auto rhs = equality();
+            new_expr->left = std::move(left);
+            new_expr->right = std::move(rhs);
+            new_expr->tk = *tk;
+            left = std::move(new_expr);
+            tk = next_is({{And}});
+        }
+        return left;
     }
     std::unique_ptr<expression> parser::equality()
     {

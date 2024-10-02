@@ -95,6 +95,19 @@ namespace cpplox
             env.assign(exr->name, val);
             return val;
         }
+        lox_type operator()(logical_expression* exr)
+        {
+            auto left = std::visit(*this, to_variant(exr->left.get()));
+            if(exr->tk.type == token_type::Or)
+            {
+                if(is_truthy(left)) return true;
+            }
+            else
+            {
+                if(!is_truthy(left)) return false;
+            }
+            return is_truthy(std::visit(*this, to_variant(exr->right.get())));
+        }
         void operator()(print_statement* stat)
         {
             std::cout << to_string(std::visit(*this, to_variant(stat->expr.get()))) << '\n';
@@ -120,6 +133,18 @@ namespace cpplox
                 std::visit(*this, to_variant(stat.get()));
             }
             env.pop_scope();
+        }
+        void operator()(if_statement* stat)
+        {
+            auto cond = std::visit(*this, to_variant(stat->condition.get()));
+            if(is_truthy(cond))
+            {
+                std::visit(*this, to_variant(stat->then_statement.get()));
+            }
+            else if(stat->else_statement)
+            {
+                std::visit(*this, to_variant(stat->else_statement.get()));
+            }
         }
     private:
         static std::string to_string(const lox_type& type)
