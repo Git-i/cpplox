@@ -96,8 +96,8 @@ namespace cpplox {
     }
     std::unique_ptr<statement> parser::stat()
     {
-        auto tk = next_is({{Print}});
-        if(tk) return print_stat();
+        if(auto tk = next_is({{Print}})) return print_stat();
+        if(auto tk = next_is({{LBrace}})) return block_stat();
         return expr_stat();
     }
 
@@ -119,6 +119,19 @@ namespace cpplox {
         auto st = std::make_unique<expression_statement>();
         st->expr = std::move(exp);
         return st;
+    }
+
+    std::unique_ptr<statement> parser::block_stat()
+    {
+        std::unique_ptr<block_statement> res = std::make_unique<block_statement>();
+        auto tk = next_is({{RBrace}});
+        while(!tk && !m_scanner.is_eof())
+        {
+            res->statements.emplace_back(declaration());
+            tk = next_is({{RBrace}});
+        }
+        if(tk->type != RBrace) throw parse_error("Expected '}' after block", tk->line);
+        return res;
     }
 
     std::unique_ptr<expression> parser::expr()

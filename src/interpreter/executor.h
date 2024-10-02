@@ -112,6 +112,15 @@ namespace cpplox
             }
             env.define(stat->name.text, std::move(val));
         }
+        void operator()(block_statement* stat)
+        {
+            env.push_scope();
+            for(auto& stat : stat->statements)
+            {
+                std::visit(*this, to_variant(stat.get()));
+            }
+            env.pop_scope();
+        }
     private:
         static std::string to_string(const lox_type& type)
         {

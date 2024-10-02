@@ -1,5 +1,7 @@
 #pragma once
 #include <memory>
+#include <vector>
+
 #include "expression.h"
 namespace cpplox
 {
@@ -24,7 +26,12 @@ namespace cpplox
         token name;
         std::unique_ptr<expression> init;
     };
-    using statements = std::variant<expression_statement*, print_statement*, variable_statement*>;
+    class block_statement : public statement
+    {
+    public:
+        std::vector<std::unique_ptr<statement>> statements;
+    };
+    using statements = std::variant<expression_statement*, print_statement*, variable_statement*, block_statement*>;
     statements to_variant(statement* stmt);
 
 

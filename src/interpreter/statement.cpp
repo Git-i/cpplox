@@ -5,5 +5,6 @@ namespace cpplox {
         if(auto p = dynamic_cast<print_statement*>(stmt)) return p;
         if(auto p = dynamic_cast<expression_statement*>(stmt)) return p;
         if(auto p = dynamic_cast<variable_statement*>(stmt)) return p;
+        if(auto p = dynamic_cast<block_statement*>(stmt)) return p;
     }
 }
