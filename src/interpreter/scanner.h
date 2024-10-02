@@ -22,7 +22,7 @@ namespace cpplox {
     class scanner {
         std::istream& source;
     public:
-        scanner(std::istream& src) : source(src), line(1) {};
+        scanner(std::istream& src) : source(src) {};
         token scan() noexcept(false);
         [[nodiscard]] bool is_eof();
     private:
@@ -34,7 +34,7 @@ namespace cpplox {
         token scan_identifier(char start = 0);
         char peek_next();
         token scan_token();
-        int line;
+        int line = 1;
         size_t current_pos = 0;
         static std::unordered_map<std::string, token_type> keyword_map;
     };

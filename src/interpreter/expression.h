@@ -40,7 +40,12 @@ namespace cpplox {
     public:
         lox_type value;
     };
-    using expressions = std::variant<binary_expression*, unary_expression*, group_expression*, literal_expression*, ternary_expression*>;
+    class variable_expression : public expression
+    {
+    public:
+        token name;
+    };
+    using expressions = std::variant<binary_expression*, unary_expression*, group_expression*, literal_expression*, ternary_expression*, variable_expression*>;
     expressions to_variant(expression* expr);
 
 

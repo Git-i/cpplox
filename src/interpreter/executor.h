@@ -3,7 +3,7 @@
 
 #include "expression.h"
 #include "statement.h"
-
+#include "environment.h"
 namespace cpplox
 {
     class execution_error : public std::exception
@@ -85,6 +85,10 @@ namespace cpplox
         {
             return std::visit(*this, to_variant(exr->operand.get()));
         }
+        lox_type operator()(variable_expression* exr) const
+        {
+            return env.get(exr->name);
+        }
         void operator()(print_statement* stat) const
         {
             std::cout << to_string(std::visit(*this, to_variant(stat->expr.get()))) << '\n';
@@ -92,6 +96,15 @@ namespace cpplox
         void operator()(expression_statement* stat) const
         {
             std::visit(*this, to_variant(stat->expr.get()));
+        }
+        void operator()(variable_statement* stat)
+        {
+            lox_type val = std::monostate{};
+            if(stat->init)
+            {
+                val = std::visit(*this, to_variant(stat->init.get()));
+            }
+            env.define(stat->name.text, std::move(val));
         }
     private:
         static std::string to_string(const lox_type& type)
@@ -116,6 +129,6 @@ namespace cpplox
             if(std::holds_alternative<bool>(t)) return std::get<bool>(t);
             return true;
         }
-
+        environment env;
     };
 }

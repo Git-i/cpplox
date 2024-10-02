@@ -31,6 +31,8 @@ namespace cpplox {
         void synchronize();
         std::optional<token> next_is(std::span<const token_type>);
 
+        std::unique_ptr<statement> declaration();
+        std::unique_ptr<statement> variable_declaration();
         std::unique_ptr<statement> stat();
         std::unique_ptr<statement> print_stat();
         std::unique_ptr<statement> expr_stat();
@@ -46,5 +48,4 @@ namespace cpplox {
         std::unique_ptr<expression> primary();
         std::queue<token> peek_buffer;
     };
-
 } // cpplox

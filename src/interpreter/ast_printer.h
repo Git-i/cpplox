@@ -43,6 +43,10 @@ namespace cpplox
             };
             return std::visit(literal_visitor{}, exr->value);
         }
+        std::string operator()(variable_expression* exr) const
+        {
+            return "var";
+        }
         std::string operator()(group_expression* exr) const
         {
             return parenthesize("group", {{exr->operand.get()}});

@@ -18,7 +18,13 @@ namespace cpplox
     public:
         std::unique_ptr<expression> expr;
     };
-    using statements = std::variant<expression_statement*, print_statement*>;
+    class variable_statement : public statement
+    {
+    public:
+        token name;
+        std::unique_ptr<expression> init;
+    };
+    using statements = std::variant<expression_statement*, print_statement*, variable_statement*>;
     statements to_variant(statement* stmt);
 
 

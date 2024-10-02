@@ -34,6 +34,10 @@ int main(int argc, char** argv) {
     std::istringstream input(R"("asggae")");
     cpplox::scanner sc(std::cin);
     cpplox::parser p(sc);
-    auto tree = p.parse();
-    std::visit(cpplox::executor{}, cpplox::to_variant(tree.get()));
+    auto e = cpplox::executor{};
+    while(!sc.is_eof())
+    {
+        auto tree = p.parse();
+        std::visit(e, cpplox::to_variant(tree.get()));
+    }
 }

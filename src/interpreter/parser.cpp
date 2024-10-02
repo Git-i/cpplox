@@ -67,7 +67,32 @@ namespace cpplox {
     using enum token_type;
     std::unique_ptr<statement> parser::parse()
     {
-        return stat();
+        return declaration();
+    }
+    std::unique_ptr<statement> parser::declaration()
+    {
+        try
+        {
+            if(auto tk = next_is({{Var}}))
+                return variable_declaration();
+            return stat();
+        }
+        catch (parse_error& e)
+        {
+            synchronize();
+            throw;
+        }
+    }
+    std::unique_ptr<statement> parser::variable_declaration()
+    {
+        std::unique_ptr<variable_statement> res = std::make_unique<variable_statement>();
+        auto iden = get();
+        if(iden.type != Identifier) throw parse_error("Expected identifier after expression", iden.line);
+        res->name = std::move(iden);
+        if(next_is({{Equal}})) res->init = expr();
+        auto sc = get();
+        if(sc.type != Semicolon) throw parse_error("Expected ';' after expression", sc.line);
+        return res;
     }
     std::unique_ptr<statement> parser::stat()
     {
@@ -192,6 +217,12 @@ namespace cpplox {
     std::unique_ptr<expression> parser::primary()
     {
         auto tk = get();
+        if(tk.type == Identifier)
+        {
+            auto expr = std::make_unique<variable_expression>();
+            expr->name = tk;
+            return expr;
+        }
         if(tk.type == NumericLiteral)
         {
             double val = std::stod(tk.text);
