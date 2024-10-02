@@ -8,6 +8,7 @@
 #include <cstring>
 
 namespace cpplox {
+
     std::optional<token> parser::next_is(std::span<const token_type> types)
     {
         if(m_scanner.is_eof()) return std::nullopt;
@@ -64,16 +65,35 @@ namespace cpplox {
 
 
     using enum token_type;
-    std::unique_ptr<expression> parser::parse()
+    std::unique_ptr<statement> parser::parse()
     {
-        try
-        {
-            return expr();
-        }
-        catch(const parse_error& e)
-        {
-            raise(SIGTRAP);
-        }
+        return stat();
+    }
+    std::unique_ptr<statement> parser::stat()
+    {
+        auto tk = next_is({{Print}});
+        if(tk) return print_stat();
+        return expr_stat();
+    }
+
+    std::unique_ptr<statement> parser::print_stat()
+    {
+        auto exp = expr();
+        auto sc = get();
+        if(sc.type != Semicolon) throw parse_error("Expected ';' after expression", sc.line);
+        auto st = std::make_unique<print_statement>();
+        st->expr = std::move(exp);
+        return st;
+    }
+
+    std::unique_ptr<statement> parser::expr_stat()
+    {
+        auto exp = expr();
+        auto sc = get();
+        if(sc.type != Semicolon) throw parse_error("Expected ';' after expression", sc.line);
+        auto st = std::make_unique<expression_statement>();
+        st->expr = std::move(exp);
+        return st;
     }
 
     std::unique_ptr<expression> parser::expr()

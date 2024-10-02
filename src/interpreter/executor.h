@@ -1,5 +1,9 @@
 #pragma once
+#include <iostream>
+
 #include "expression.h"
+#include "statement.h"
+
 namespace cpplox
 {
     class execution_error : public std::exception
@@ -81,7 +85,22 @@ namespace cpplox
         {
             return std::visit(*this, to_variant(exr->operand.get()));
         }
+        void operator()(print_statement* stat) const
+        {
+            std::cout << to_string(std::visit(*this, to_variant(stat->expr.get()))) << '\n';
+        }
+        void operator()(expression_statement* stat) const
+        {
+            std::visit(*this, to_variant(stat->expr.get()));
+        }
     private:
+        static std::string to_string(const lox_type& type)
+        {
+            if(std::holds_alternative<std::monostate>(type)) return "nil";
+            if(std::holds_alternative<std::string>(type)) return std::get<std::string>(type);
+            if(std::holds_alternative<double>(type)) return std::to_string(std::get<double>(type));
+            return "unknown";
+        }
         static void check_number_operand(int line, const lox_type& t)
         {
             if(!std::holds_alternative<double>(t)) throw execution_error("Expected a number in operation", line);

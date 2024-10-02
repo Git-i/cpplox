@@ -9,12 +9,7 @@
 #include "interpreter/parser.h"
 #include "interpreter/scanner.h"
 
-std::string to_string(const cpplox::lox_type& type)
-{
-    if(std::holds_alternative<std::monostate>(type)) return "nil";
-    if(std::holds_alternative<std::string>(type)) return std::get<std::string>(type);
-    if(std::holds_alternative<double>(type)) return std::to_string(std::get<double>(type));
-}
+
 
 int main(int argc, char** argv) {
     /*
@@ -37,8 +32,8 @@ int main(int argc, char** argv) {
     in.run();
     */
     std::istringstream input(R"("asggae")");
-    cpplox::scanner sc(input);
+    cpplox::scanner sc(std::cin);
     cpplox::parser p(sc);
     auto tree = p.parse();
-    std::cout << to_string(std::visit(cpplox::executor{}, cpplox::to_variant(tree.get()))) << std::endl;
+    std::visit(cpplox::executor{}, cpplox::to_variant(tree.get()));
 }

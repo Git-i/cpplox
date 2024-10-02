@@ -8,6 +8,7 @@ sources = [
         'src/interpreter/scanner.cpp',
         'src/interpreter/expression.cpp',
         'src/interpreter/parser.cpp',
+        'src/interpreter/statement.cpp',
 ]
 cpplox = executable('cpplox', sources, install : true)
 

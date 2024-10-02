@@ -40,7 +40,7 @@ namespace cpplox
             case '.': return {.type = token_type::Period, .text = std::string(1, c)};
             case '-': return {.type = token_type::Minus, .text = std::string(1, c)};
             case '+': return {.type = token_type::Plus, .text = std::string(1, c)};
-            case ';': return {.type = token_type::Comma, .text = std::string(1, c)};
+            case ';': return {.type = token_type::Semicolon, .text = std::string(1, c)};
             case '*': return {.type = token_type::Star, .text = std::string(1, c)};
             case '?': return {.type = token_type::Question, .text = std::string(1, c)};
             case ':': return {.type = token_type::Colon, .text = std::string(1, c)};

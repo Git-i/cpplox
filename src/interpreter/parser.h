@@ -5,6 +5,7 @@
 
 #include "expression.h"
 #include "scanner.h"
+#include "statement.h"
 
 namespace cpplox {
     class parse_error : public std::exception
@@ -23,12 +24,18 @@ namespace cpplox {
         scanner& m_scanner;
     public:
         explicit parser(scanner& scn): m_scanner(scn) {}
-        std::unique_ptr<expression> parse();
+        std::unique_ptr<statement> parse();
     private:
         token get();
         token peek();
         void synchronize();
         std::optional<token> next_is(std::span<const token_type>);
+
+        std::unique_ptr<statement> stat();
+        std::unique_ptr<statement> print_stat();
+        std::unique_ptr<statement> expr_stat();
+
+
         std::unique_ptr<expression> expr();
         std::unique_ptr<expression> ternary();
         std::unique_ptr<expression> equality();
