@@ -47,6 +47,10 @@ namespace cpplox
         {
             return "var";
         }
+        std::string operator()(assignment_expression* exr) const
+        {
+            return parenthesize(exr->name.text, {{exr->value.get()}});
+        }
         std::string operator()(group_expression* exr) const
         {
             return parenthesize("group", {{exr->operand.get()}});

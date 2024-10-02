@@ -45,7 +45,19 @@ namespace cpplox {
     public:
         token name;
     };
-    using expressions = std::variant<binary_expression*, unary_expression*, group_expression*, literal_expression*, ternary_expression*, variable_expression*>;
+    class assignment_expression : public expression
+    {
+    public:
+        token name;
+        std::unique_ptr<expression> value;
+    };
+    using expressions = std::variant<binary_expression*,
+        unary_expression*,
+        group_expression*,
+        literal_expression*,
+        ternary_expression*,
+        variable_expression*,
+        assignment_expression*>;
     expressions to_variant(expression* expr);
 
 

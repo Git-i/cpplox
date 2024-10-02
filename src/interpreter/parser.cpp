@@ -123,8 +123,26 @@ namespace cpplox {
 
     std::unique_ptr<expression> parser::expr()
     {
-        return ternary();
+        return assignment();
     }
+    std::unique_ptr<expression> parser::assignment()
+    {
+        auto exp = ternary();
+        if(auto tk = next_is({{Equal}}))
+        {
+            auto value = assignment();
+            if(auto p = dynamic_cast<variable_expression*>(exp.get()))
+            {
+                auto assign = std::make_unique<assignment_expression>();
+                assign->name = p->name;
+                assign->value = std::move(value);
+                return assign;
+            }
+            throw parse_error("Invalid assignment target", tk->line);
+        }
+        return exp;
+    }
+
     std::unique_ptr<expression> parser::ternary()
     {
         auto condition = equality();

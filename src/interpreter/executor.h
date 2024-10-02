@@ -23,7 +23,7 @@ namespace cpplox
     };
     class executor {
     public:
-        lox_type operator()(ternary_expression* exr) const
+        lox_type operator()(ternary_expression* exr)
         {
             auto cond = std::visit(*this, to_variant(exr->condition.get()));
             if(is_truthy(cond))
@@ -32,7 +32,7 @@ namespace cpplox
             }
             return std::visit(*this, to_variant(exr->invalid.get()));
         }
-        lox_type operator()(binary_expression* exr) const
+        lox_type operator()(binary_expression* exr)
         {
             auto left = std::visit(*this, to_variant(exr->left.get()));
             auto right = std::visit(*this, to_variant(exr->right.get()));
@@ -67,7 +67,7 @@ namespace cpplox
             case token_type::ExclamationEqual: return left != right;
             }
         };
-        lox_type operator()(unary_expression* exr) const
+        lox_type operator()(unary_expression* exr)
         {
             auto right = std::visit(*this, to_variant(exr->operand.get()));
 
@@ -81,7 +81,7 @@ namespace cpplox
         {
             return exr->value;
         }
-        lox_type operator()(group_expression* exr) const
+        lox_type operator()(group_expression* exr)
         {
             return std::visit(*this, to_variant(exr->operand.get()));
         }
@@ -89,11 +89,17 @@ namespace cpplox
         {
             return env.get(exr->name);
         }
-        void operator()(print_statement* stat) const
+        lox_type operator()(assignment_expression* exr)
+        {
+            auto val = std::visit(*this, to_variant(exr->value.get()));
+            env.assign(exr->name, val);
+            return val;
+        }
+        void operator()(print_statement* stat)
         {
             std::cout << to_string(std::visit(*this, to_variant(stat->expr.get()))) << '\n';
         }
-        void operator()(expression_statement* stat) const
+        void operator()(expression_statement* stat)
         {
             std::visit(*this, to_variant(stat->expr.get()));
         }
