@@ -146,6 +146,13 @@ namespace cpplox
                 std::visit(*this, to_variant(stat->else_statement.get()));
             }
         }
+        void operator()(while_statement* stat)
+        {
+            while(is_truthy(std::visit(*this, to_variant(stat->condition.get()))))
+            {
+                std::visit(*this, to_variant(stat->body.get()));
+            }
+        }
     private:
         static std::string to_string(const lox_type& type)
         {

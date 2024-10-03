@@ -54,7 +54,10 @@ namespace cpplox{
             for(auto i = environment_stack.size(); i > 0; i--)
             {
                 if(const auto idx = i - 1; environment_stack[idx].contains(name))
+                {
                     environment_stack[idx].assign(name, std::move(value));
+                    return;
+                }
             }
             throw env_error("Undefined variable " + name.text);
         }

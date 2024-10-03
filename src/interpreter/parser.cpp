@@ -99,16 +99,33 @@ namespace cpplox {
         if(auto tk = next_is({{Print}})) return print_stat();
         if(auto tk = next_is({{LBrace}})) return block_stat();
         if(auto tk = next_is({{If}})) return if_stat();
+        if(auto tk = next_is({{While}})) return while_stat();
         return expr_stat();
     }
     std::unique_ptr<statement> parser::if_stat()
     {
         auto st = std::make_unique<if_statement>();
+        auto lbracket = get();
+        if(lbracket.type != LParen) throw parse_error("Expected '(' after 'if'", lbracket.line);
         st->condition = expr();
+        auto rbracket = get();
+        if(rbracket.type != RParen) throw parse_error("Expected ')' after expression", rbracket.line);
         st->then_statement = stat();
         if(auto tk = next_is({{Else}})) st->else_statement = stat();
         return st;
     }
+    std::unique_ptr<statement> parser::while_stat()
+    {
+        auto st = std::make_unique<while_statement>();
+        auto lbracket = get();
+        if(lbracket.type != LParen) throw parse_error("Expected '(' after 'while'", lbracket.line);
+        st->condition = expr();
+        auto rbracket = get();
+        if(rbracket.type != RParen) throw parse_error("Expected ')' after expression", rbracket.line);
+        st->body = stat();
+        return st;
+    }
+
 
     std::unique_ptr<statement> parser::print_stat()
     {

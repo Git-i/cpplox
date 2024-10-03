@@ -38,11 +38,18 @@ namespace cpplox
         std::unique_ptr<statement> then_statement;
         std::unique_ptr<statement> else_statement;
     };
+    class while_statement : public statement
+    {
+    public:
+        std::unique_ptr<expression> condition;
+        std::unique_ptr<statement> body;
+    };
     using statements = std::variant<expression_statement*,
                                     print_statement*,
                                     variable_statement*,
                                     block_statement*,
-                                    if_statement*>;
+                                    if_statement*,
+                                    while_statement*>;
     statements to_variant(statement* stmt);
 
 

@@ -1,5 +1,4 @@
 #include "scanner.h"
-#include "ast_printer.h"
 namespace cpplox
 {
     std::unordered_map<std::string, token_type> scanner::keyword_map{

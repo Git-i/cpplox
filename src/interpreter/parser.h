@@ -38,6 +38,7 @@ namespace cpplox {
         std::unique_ptr<statement> expr_stat();
         std::unique_ptr<statement> block_stat();
         std::unique_ptr<statement> if_stat();
+        std::unique_ptr<statement> while_stat();
 
 
         std::unique_ptr<expression> expr();

@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iostream>
 
-#include "interpreter/ast_printer.h"
 #include "interpreter/executor.h"
 #include "interpreter/expression.h"
 #include "interpreter/interpreter.h"

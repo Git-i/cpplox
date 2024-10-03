@@ -64,7 +64,8 @@ namespace cpplox {
         literal_expression*,
         ternary_expression*,
         variable_expression*,
-        assignment_expression*>;
+        assignment_expression*,
+        logical_expression*>;
     expressions to_variant(expression* expr);
 
 
